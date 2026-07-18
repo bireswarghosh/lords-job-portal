@@ -1,0 +1,370 @@
+import { Candidate, Job, Department, HospitalBranch, User, InterviewRecord, AuditLog, Template, Notification } from './types';
+
+export const currentUser: User = {
+  id: 'u1',
+  name: 'Dr. Priya Sharma',
+  email: 'priya.sharma@hospital.com',
+  role: 'hr_manager',
+  avatar: '',
+  department: 'HR',
+  phone: '+91 98765 43210',
+};
+
+export const departments: Department[] = [
+  { id: 'd1', name: 'Emergency Medicine', code: 'EM', head: 'Dr. Rajesh Kumar', totalPositions: 15, openPositions: 4, color: '#EF4444' },
+  { id: 'd2', name: 'Cardiology', code: 'CD', head: 'Dr. Ananya Patel', totalPositions: 12, openPositions: 3, color: '#3B82F6' },
+  { id: 'd3', name: 'Orthopedics', code: 'OR', head: 'Dr. Suresh Menon', totalPositions: 8, openPositions: 2, color: '#10B981' },
+  { id: 'd4', name: 'Nursing', code: 'NU', head: 'Sr. Mary Thomas', totalPositions: 40, openPositions: 12, color: '#F59E0B' },
+  { id: 'd5', name: 'Radiology', code: 'RD', head: 'Dr. Vikram Singh', totalPositions: 6, openPositions: 1, color: '#8B5CF6' },
+  { id: 'd6', name: 'Pharmacy', code: 'PH', head: 'Dr. Meera Joshi', totalPositions: 8, openPositions: 3, color: '#EC4899' },
+  { id: 'd7', name: 'Laboratory', code: 'LB', head: 'Dr. Arun Nair', totalPositions: 10, openPositions: 2, color: '#06B6D4' },
+  { id: 'd8', name: 'Administration', code: 'AD', head: 'Mr. Ravi Kumar', totalPositions: 10, openPositions: 2, color: '#6366F1' },
+  { id: 'd9', name: 'ICU', code: 'IC', head: 'Dr. Deepa Gupta', totalPositions: 20, openPositions: 5, color: '#EF4444' },
+  { id: 'd10', name: 'Surgery', code: 'SR', head: 'Dr. Mohan Das', totalPositions: 10, openPositions: 2, color: '#14B8A6' },
+];
+
+export const branches: HospitalBranch[] = [
+  { id: 'b1', name: 'City Central Hospital', code: 'CCH', address: '123 Medical Center Road', city: 'Mumbai', state: 'Maharashtra', phone: '+91 22 2345 6789', email: 'info@citycentral.com', isActive: true },
+  { id: 'b2', name: 'Lakeside Medical Center', code: 'LMC', address: '45 Lake View Avenue', city: 'Bangalore', state: 'Karnataka', phone: '+91 80 2345 6789', email: 'info@lakeside.com', isActive: true },
+  { id: 'b3', name: 'Green Valley Hospital', code: 'GVH', address: '78 Hill Station Road', city: 'Chennai', state: 'Tamil Nadu', phone: '+91 44 2345 6789', email: 'info@greenvalley.com', isActive: true },
+  { id: 'b4', name: 'Metro Health Institute', code: 'MHI', address: '90 Metro Boulevard', city: 'Delhi', state: 'Delhi', phone: '+91 11 2345 6789', email: 'info@metrohealth.com', isActive: true },
+];
+
+export const jobs: Job[] = [
+  {
+    id: 'j1', title: 'Senior Cardiologist', departmentId: 'd2', department: 'Cardiology', branchId: 'b1', branch: 'City Central Hospital',
+    location: 'Mumbai', employmentType: 'full_time', experienceRequired: '8-12 years', salaryMin: 250000, salaryMax: 450000,
+    qualification: 'MD, DM Cardiology', skills: ['Interventional Cardiology', 'Echocardiography', 'Cardiac CT'], vacancies: 2,
+    description: 'We are looking for an experienced Cardiologist to join our team.', responsibilities: ['Lead cardiac procedures', 'Mentor junior doctors', 'Conduct research'],
+    benefits: ['Health Insurance', 'Continuing Education', 'Research Opportunities'], expiryDate: '2026-09-30', hiringManager: 'Dr. Ananya Patel',
+    status: 'open', applyLink: '/careers/senior-cardiologist', createdAt: '2026-06-01', updatedAt: '2026-07-01', applicationsCount: 24, isUrgent: true,
+  },
+  {
+    id: 'j2', title: 'ICU Nurse', departmentId: 'd4', department: 'Nursing', branchId: 'b2', branch: 'Lakeside Medical Center',
+    location: 'Bangalore', employmentType: 'full_time', experienceRequired: '3-5 years', salaryMin: 45000, salaryMax: 75000,
+    qualification: 'B.Sc Nursing, Critical Care Certificate', skills: ['Critical Care', 'Ventilator Management', 'Patient Monitoring'], vacancies: 8,
+    description: 'Join our ICU team providing critical care nursing.', responsibilities: ['Monitor critical patients', 'Administer medications', 'Coordinate with doctors'],
+    benefits: ['Health Insurance', 'Night Shift Allowance', 'Meals'], expiryDate: '2026-08-15', hiringManager: 'Sr. Mary Thomas',
+    status: 'urgent', applyLink: '/careers/icu-nurse', createdAt: '2026-06-15', updatedAt: '2026-07-10', applicationsCount: 45, isUrgent: true,
+  },
+  {
+    id: 'j3', title: 'Radiologist', departmentId: 'd5', department: 'Radiology', branchId: 'b1', branch: 'City Central Hospital',
+    location: 'Mumbai', employmentType: 'full_time', experienceRequired: '5-8 years', salaryMin: 180000, salaryMax: 300000,
+    qualification: 'MD Radiology', skills: ['MRI', 'CT Scan', 'X-Ray', 'Ultrasound'], vacancies: 1,
+    description: 'Expert radiologist for our diagnostic imaging center.', responsibilities: ['Interpret imaging studies', 'Report findings', 'Guide procedures'],
+    benefits: ['Health Insurance', 'Research Opportunities'], expiryDate: '2026-10-30', hiringManager: 'Dr. Vikram Singh',
+    status: 'open', applyLink: '/careers/radiologist', createdAt: '2026-05-20', updatedAt: '2026-06-20', applicationsCount: 18, isUrgent: false,
+  },
+  {
+    id: 'j4', title: 'Pharmacist', departmentId: 'd6', department: 'Pharmacy', branchId: 'b3', branch: 'Green Valley Hospital',
+    location: 'Chennai', employmentType: 'full_time', experienceRequired: '2-4 years', salaryMin: 35000, salaryMax: 55000,
+    qualification: 'B.Pharm / M.Pharm', skills: ['Drug Dispensing', 'Inventory Management', 'Patient Counseling'], vacancies: 3,
+    description: 'Hospital pharmacist for our pharmacy department.', responsibilities: ['Dispense medications', 'Manage inventory', 'Counsel patients'],
+    benefits: ['Health Insurance', 'Meals'], expiryDate: '2026-08-30', hiringManager: 'Dr. Meera Joshi',
+    status: 'open', applyLink: '/careers/pharmacist', createdAt: '2026-06-10', updatedAt: '2026-07-05', applicationsCount: 32, isUrgent: false,
+  },
+  {
+    id: 'j5', title: 'Lab Technician', departmentId: 'd7', department: 'Laboratory', branchId: 'b4', branch: 'Metro Health Institute',
+    location: 'Delhi', employmentType: 'full_time', experienceRequired: '1-3 years', salaryMin: 28000, salaryMax: 45000,
+    qualification: 'B.Sc Medical Lab Technology', skills: ['Hematology', 'Biochemistry', 'Microbiology'], vacancies: 4,
+    description: 'Medical laboratory technician for our diagnostic lab.', responsibilities: ['Perform lab tests', 'Maintain equipment', 'Report results'],
+    benefits: ['Health Insurance', 'Transport Allowance'], expiryDate: '2026-09-15', hiringManager: 'Dr. Arun Nair',
+    status: 'paused', applyLink: '/careers/lab-technician', createdAt: '2026-04-01', updatedAt: '2026-06-15', applicationsCount: 56, isUrgent: false,
+  },
+  {
+    id: 'j6', title: 'Emergency Physician', departmentId: 'd1', department: 'Emergency Medicine', branchId: 'b1', branch: 'City Central Hospital',
+    location: 'Mumbai', employmentType: 'full_time', experienceRequired: '5-10 years', salaryMin: 200000, salaryMax: 350000,
+    qualification: 'MD Emergency Medicine', skills: ['Trauma Care', 'ACLS', 'ATLS', 'Emergency Procedures'], vacancies: 3,
+    description: 'Emergency physician for our Level 1 trauma center.', responsibilities: ['Treat emergency patients', 'Lead trauma team', 'Triage patients'],
+    benefits: ['Health Insurance', 'Night Shift Allowance', 'Continuing Education'], expiryDate: '2026-12-31', hiringManager: 'Dr. Rajesh Kumar',
+    status: 'urgent', applyLink: '/careers/emergency-physician', createdAt: '2026-07-01', updatedAt: '2026-07-15', applicationsCount: 12, isUrgent: true,
+  },
+  {
+    id: 'j7', title: 'Hospital Administrator', departmentId: 'd8', department: 'Administration', branchId: 'b2', branch: 'Lakeside Medical Center',
+    location: 'Bangalore', employmentType: 'full_time', experienceRequired: '10-15 years', salaryMin: 150000, salaryMax: 280000,
+    qualification: 'MHA / MBA Healthcare', skills: ['Hospital Operations', 'Budget Management', 'Compliance', 'Team Leadership'], vacancies: 1,
+    description: 'Senior hospital administrator to oversee operations.', responsibilities: ['Manage hospital operations', 'Ensure compliance', 'Lead admin team'],
+    benefits: ['Health Insurance', 'Performance Bonus', 'Company Car'], expiryDate: '2026-11-30', hiringManager: 'Mr. Ravi Kumar',
+    status: 'open', applyLink: '/careers/hospital-administrator', createdAt: '2026-06-20', updatedAt: '2026-07-12', applicationsCount: 8, isUrgent: false,
+  },
+  {
+    id: 'j8', title: 'Pediatric Nurse', departmentId: 'd4', department: 'Nursing', branchId: 'b3', branch: 'Green Valley Hospital',
+    location: 'Chennai', employmentType: 'full_time', experienceRequired: '2-5 years', salaryMin: 40000, salaryMax: 65000,
+    qualification: 'B.Sc Nursing, Pediatric Nursing Certificate', skills: ['Pediatric Care', 'Child Psychology', 'Vaccination'], vacancies: 5,
+    description: 'Nursing staff for our pediatric ward.', responsibilities: ['Care for pediatric patients', 'Educate parents', 'Maintain records'],
+    benefits: ['Health Insurance', 'Meals', 'Night Shift Allowance'], expiryDate: '2026-09-30', hiringManager: 'Sr. Mary Thomas',
+    status: 'open', applyLink: '/careers/pediatric-nurse', createdAt: '2026-06-25', updatedAt: '2026-07-10', applicationsCount: 28, isUrgent: false,
+  },
+];
+
+const candidateStatuses = ['new', 'under_review', 'shortlisted', 'interview_scheduled', 'interview_completed', 'offer_sent', 'selected', 'hired', 'rejected', 'hold', 'future_opportunity'] as const;
+
+export const candidates: Candidate[] = [
+  {
+    id: 'c1', applicationNumber: 'APP-2026-001', fullName: 'Rahul Verma', gender: 'male', dob: '1988-05-15',
+    email: 'rahul.verma@email.com', mobile: '+91 98765 10001', whatsapp: '+91 98765 10001', whatsappVerified: true, emailVerified: true,
+    address: '45 MG Road', city: 'Mumbai', state: 'Maharashtra', pin: '400001',
+    qualification: 'MD Cardiology', experience: '10 years', currentEmployer: 'Apollo Hospital', currentSalary: 220000, expectedSalary: 350000,
+    noticePeriod: '30 days', preferredDepartment: 'Cardiology', preferredLocation: 'Mumbai', languages: ['English', 'Hindi', 'Marathi'],
+    skills: ['Interventional Cardiology', 'Echocardiography', 'Cardiac CT'], linkedIn: 'linkedin.com/in/rahulverma',
+    jobId: 'j1', jobTitle: 'Senior Cardiologist', department: 'Cardiology', applicationDate: '2026-07-10', status: 'shortlisted',
+    score: { communication: 8, technicalSkill: 9, experience: 9, qualification: 9, personality: 8, hospitalCultureFit: 7, computerKnowledge: 6, leadership: 8, confidence: 8, overall: 8.1 },
+    assignedHR: 'Priya Sharma', tags: ['top_candidate', 'senior'], isFutureCandidate: false, isBlacklisted: false, isFavorite: true,
+    remarks: [
+      { id: 'r1', candidateId: 'c1', userId: 'u1', userName: 'Priya Sharma', type: 'overall', content: 'Excellent candidate with strong interventional cardiology background. 10 years experience at Apollo.', createdAt: '2026-07-11T10:30:00Z', isPinned: true, colorLabel: 'green' },
+      { id: 'r2', candidateId: 'c1', userId: 'u2', userName: 'Rajesh Kumar', type: 'technical', content: 'Strong technical skills. Reviewed publications - 15 papers in peer-reviewed journals.', createdAt: '2026-07-12T14:00:00Z', isPinned: false },
+    ],
+    communications: [
+      { id: 'cm1', candidateId: 'c1', type: 'whatsapp', direction: 'outbound', content: 'Hello Rahul, we have received your application for Senior Cardiologist position.', timestamp: '2026-07-10T09:00:00Z', status: 'delivered' },
+      { id: 'cm2', candidateId: 'c1', type: 'whatsapp', direction: 'inbound', content: 'Thank you for the update. Looking forward to hearing from you.', timestamp: '2026-07-10T09:15:00Z' },
+      { id: 'cm3', candidateId: 'c1', type: 'email', direction: 'outbound', content: 'Interview scheduled for Senior Cardiologist position on 20th July.', timestamp: '2026-07-15T11:00:00Z', status: 'opened' },
+    ],
+    interviewHistory: [
+      { id: 'iv1', candidateId: 'c1', candidateName: 'Rahul Verma', jobId: 'j1', jobTitle: 'Senior Cardiologist', type: 'video', date: '2026-07-20', time: '10:00', panelMembers: ['Dr. Ananya Patel', 'Dr. Rajesh Kumar'], notes: 'Initial screening interview', status: 'scheduled', reminderSent: true },
+    ],
+    statusHistory: [
+      { id: 'sh1', candidateId: 'c1', fromStatus: null, toStatus: 'new', userId: 'u1', userName: 'System', remarks: 'Application submitted', timestamp: '2026-07-10T08:00:00Z' },
+      { id: 'sh2', candidateId: 'c1', fromStatus: 'new', toStatus: 'under_review', userId: 'u1', userName: 'Priya Sharma', remarks: 'Reviewing application and resume', timestamp: '2026-07-11T10:00:00Z' },
+      { id: 'sh3', candidateId: 'c1', fromStatus: 'under_review', toStatus: 'shortlisted', userId: 'u1', userName: 'Priya Sharma', remarks: 'Strong profile, shortlisting for interview', timestamp: '2026-07-12T14:00:00Z' },
+    ],
+  },
+  {
+    id: 'c2', applicationNumber: 'APP-2026-002', fullName: 'Sneha Reddy', gender: 'female', dob: '1992-08-20',
+    email: 'sneha.reddy@email.com', mobile: '+91 98765 10002', whatsapp: '+91 98765 10002', whatsappVerified: true, emailVerified: false,
+    address: '12 Koramangala', city: 'Bangalore', state: 'Karnataka', pin: '560034',
+    qualification: 'B.Sc Nursing', experience: '4 years', currentEmployer: 'Manipal Hospital', currentSalary: 50000, expectedSalary: 70000,
+    noticePeriod: '15 days', preferredDepartment: 'ICU', preferredLocation: 'Bangalore', languages: ['English', 'Hindi', 'Kannada'],
+    skills: ['Critical Care', 'Ventilator Management', 'Patient Monitoring'],
+    jobId: 'j2', jobTitle: 'ICU Nurse', department: 'Nursing', applicationDate: '2026-07-08', status: 'interview_scheduled',
+    score: { communication: 7, technicalSkill: 8, experience: 7, qualification: 7, personality: 8, hospitalCultureFit: 8, computerKnowledge: 5, leadership: 6, confidence: 7, overall: 7.1 },
+    assignedHR: 'Priya Sharma', tags: ['icu_specialist'], isFutureCandidate: false, isBlacklisted: false, isFavorite: false,
+    remarks: [
+      { id: 'r3', candidateId: 'c2', userId: 'u1', userName: 'Priya Sharma', type: 'overall', content: 'Good ICU nursing experience. Critical care certified. Recommended for interview.', createdAt: '2026-07-09T11:00:00Z', isPinned: true },
+    ],
+    communications: [
+      { id: 'cm4', candidateId: 'c2', type: 'whatsapp', direction: 'outbound', content: 'Hi Sneha, your application for ICU Nurse has been received. We will review and get back to you.', timestamp: '2026-07-08T10:00:00Z', status: 'delivered' },
+    ],
+    interviewHistory: [],
+    statusHistory: [
+      { id: 'sh4', candidateId: 'c2', fromStatus: null, toStatus: 'new', userId: 'u1', userName: 'System', remarks: 'Application submitted', timestamp: '2026-07-08T09:00:00Z' },
+      { id: 'sh5', candidateId: 'c2', fromStatus: 'new', toStatus: 'shortlisted', userId: 'u1', userName: 'Priya Sharma', remarks: 'Good experience, shortlisting', timestamp: '2026-07-09T11:00:00Z' },
+      { id: 'sh6', candidateId: 'c2', fromStatus: 'shortlisted', toStatus: 'interview_scheduled', userId: 'u1', userName: 'Priya Sharma', remarks: 'Interview scheduled for July 18', timestamp: '2026-07-10T09:00:00Z' },
+    ],
+  },
+  {
+    id: 'c3', applicationNumber: 'APP-2026-003', fullName: 'Amit Patel', gender: 'male', dob: '1985-03-10',
+    email: 'amit.patel@email.com', mobile: '+91 98765 10003', whatsapp: '+91 98765 10003', whatsappVerified: true, emailVerified: true,
+    address: '78 Andheri West', city: 'Mumbai', state: 'Maharashtra', pin: '400058',
+    qualification: 'MD Radiology', experience: '7 years', currentEmployer: 'Fortis Hospital', currentSalary: 180000, expectedSalary: 280000,
+    noticePeriod: '30 days', preferredDepartment: 'Radiology', preferredLocation: 'Mumbai', languages: ['English', 'Hindi', 'Gujarati'],
+    skills: ['MRI', 'CT Scan', 'Ultrasound', 'Interventional Radiology'],
+    jobId: 'j3', jobTitle: 'Radiologist', department: 'Radiology', applicationDate: '2026-07-05', status: 'interview_completed',
+    score: { communication: 7, technicalSkill: 8, experience: 8, qualification: 8, personality: 7, hospitalCultureFit: 7, computerKnowledge: 7, leadership: 6, confidence: 7, overall: 7.3 },
+    assignedHR: 'Vikram Singh', tags: ['experienced'], isFutureCandidate: false, isBlacklisted: false, isFavorite: false,
+    remarks: [],
+    communications: [],
+    interviewHistory: [
+      { id: 'iv2', candidateId: 'c3', candidateName: 'Amit Patel', jobId: 'j3', jobTitle: 'Radiologist', type: 'video', date: '2026-07-12', time: '14:00', panelMembers: ['Dr. Vikram Singh'], notes: 'Technical interview completed. Good knowledge.', status: 'completed', reminderSent: false, rating: 7, feedback: 'Solid candidate, recommend proceeding.' },
+    ],
+    statusHistory: [
+      { id: 'sh7', candidateId: 'c3', fromStatus: null, toStatus: 'new', userId: 'u1', userName: 'System', remarks: 'Application submitted', timestamp: '2026-07-05T08:00:00Z' },
+      { id: 'sh8', candidateId: 'c3', fromStatus: 'new', toStatus: 'shortlisted', userId: 'u1', userName: 'Vikram Singh', remarks: 'Good experience', timestamp: '2026-07-06T10:00:00Z' },
+      { id: 'sh9', candidateId: 'c3', fromStatus: 'shortlisted', toStatus: 'interview_scheduled', userId: 'u1', userName: 'Vikram Singh', remarks: '', timestamp: '2026-07-08T09:00:00Z' },
+      { id: 'sh10', candidateId: 'c3', fromStatus: 'interview_scheduled', toStatus: 'interview_completed', userId: 'u1', userName: 'Vikram Singh', remarks: 'Interview completed, positive feedback', timestamp: '2026-07-12T15:00:00Z' },
+    ],
+  },
+  {
+    id: 'c4', applicationNumber: 'APP-2026-004', fullName: 'Kavitha Krishnan', gender: 'female', dob: '1990-11-25',
+    email: 'kavitha.k@email.com', mobile: '+91 98765 10004', whatsapp: '+91 98765 10004', whatsappVerified: false, emailVerified: true,
+    address: '23 T Nagar', city: 'Chennai', state: 'Tamil Nadu', pin: '600017',
+    qualification: 'B.Pharm', experience: '3 years', currentEmployer: 'Apollo Pharmacy', currentSalary: 35000, expectedSalary: 50000,
+    noticePeriod: 'Immediate', preferredDepartment: 'Pharmacy', preferredLocation: 'Chennai', languages: ['English', 'Tamil', 'Hindi'],
+    skills: ['Drug Dispensing', 'Inventory Management', 'Patient Counseling'],
+    jobId: 'j4', jobTitle: 'Pharmacist', department: 'Pharmacy', applicationDate: '2026-07-12', status: 'new',
+    score: { communication: 6, technicalSkill: 6, experience: 5, qualification: 6, personality: 7, hospitalCultureFit: 6, computerKnowledge: 5, leadership: 4, confidence: 5, overall: 5.6 },
+    assignedHR: '', tags: [], isFutureCandidate: false, isBlacklisted: false, isFavorite: false,
+    remarks: [], communications: [], interviewHistory: [],
+    statusHistory: [
+      { id: 'sh11', candidateId: 'c4', fromStatus: null, toStatus: 'new', userId: 'u1', userName: 'System', remarks: 'Application submitted', timestamp: '2026-07-12T08:00:00Z' },
+    ],
+  },
+  {
+    id: 'c5', applicationNumber: 'APP-2026-005', fullName: 'Deepak Singh', gender: 'male', dob: '1995-01-30',
+    email: 'deepak.singh@email.com', mobile: '+91 98765 10005', whatsapp: '+91 98765 10005', whatsappVerified: true, emailVerified: true,
+    address: '56 Connaught Place', city: 'Delhi', state: 'Delhi', pin: '110001',
+    qualification: 'B.Sc Medical Lab Technology', experience: '2 years', currentEmployer: 'Lal PathLabs', currentSalary: 28000, expectedSalary: 42000,
+    noticePeriod: '15 days', preferredDepartment: 'Laboratory', preferredLocation: 'Delhi', languages: ['English', 'Hindi', 'Punjabi'],
+    skills: ['Hematology', 'Biochemistry', 'Microbiology'],
+    jobId: 'j5', jobTitle: 'Lab Technician', department: 'Laboratory', applicationDate: '2026-07-14', status: 'under_review',
+    score: { communication: 6, technicalSkill: 7, experience: 5, qualification: 6, personality: 7, hospitalCultureFit: 7, computerKnowledge: 6, leadership: 4, confidence: 6, overall: 6.0 },
+    assignedHR: 'Priya Sharma', tags: ['entry_level'], isFutureCandidate: false, isBlacklisted: false, isFavorite: false,
+    remarks: [], communications: [], interviewHistory: [],
+    statusHistory: [
+      { id: 'sh12', candidateId: 'c5', fromStatus: null, toStatus: 'new', userId: 'u1', userName: 'System', remarks: 'Application submitted', timestamp: '2026-07-14T08:00:00Z' },
+      { id: 'sh13', candidateId: 'c5', fromStatus: 'new', toStatus: 'under_review', userId: 'u1', userName: 'Priya Sharma', remarks: 'Reviewing resume', timestamp: '2026-07-15T10:00:00Z' },
+    ],
+  },
+  {
+    id: 'c6', applicationNumber: 'APP-2026-006', fullName: 'Fatima Khan', gender: 'female', dob: '1987-07-12',
+    email: 'fatima.khan@email.com', mobile: '+91 98765 10006', whatsapp: '+91 98765 10006', whatsappVerified: true, emailVerified: true,
+    address: '89 Bandra East', city: 'Mumbai', state: 'Maharashtra', pin: '400051',
+    qualification: 'MD Emergency Medicine', experience: '8 years', currentEmployer: 'Bombay Hospital', currentSalary: 200000, expectedSalary: 320000,
+    noticePeriod: '60 days', preferredDepartment: 'Emergency Medicine', preferredLocation: 'Mumbai', languages: ['English', 'Hindi', 'Urdu'],
+    skills: ['Trauma Care', 'ACLS', 'ATLS', 'Emergency Procedures', 'Leadership'],
+    jobId: 'j6', jobTitle: 'Emergency Physician', department: 'Emergency Medicine', applicationDate: '2026-07-02', status: 'offer_sent',
+    score: { communication: 9, technicalSkill: 9, experience: 9, qualification: 9, personality: 8, hospitalCultureFit: 8, computerKnowledge: 7, leadership: 9, confidence: 9, overall: 8.6 },
+    assignedHR: 'Rajesh Kumar', tags: ['top_candidate', 'leadership'], isFutureCandidate: false, isBlacklisted: false, isFavorite: true,
+    remarks: [
+      { id: 'r4', candidateId: 'c6', userId: 'u1', userName: 'Rajesh Kumar', type: 'overall', content: 'Outstanding candidate. 8 years ER experience at Bombay Hospital. Strong leadership skills. Recommended for immediate offer.', createdAt: '2026-07-10T16:00:00Z', isPinned: true, colorLabel: 'green' },
+    ],
+    communications: [
+      { id: 'cm5', candidateId: 'c6', type: 'email', direction: 'outbound', content: 'Offer letter for Emergency Physician position sent.', timestamp: '2026-07-14T11:00:00Z', status: 'opened' },
+    ],
+    interviewHistory: [
+      { id: 'iv3', candidateId: 'c6', candidateName: 'Fatima Khan', jobId: 'j6', jobTitle: 'Emergency Physician', type: 'offline', date: '2026-07-08', time: '11:00', location: 'City Central Hospital, Mumbai', panelMembers: ['Dr. Rajesh Kumar', 'Dr. Priya Sharma', 'Mr. Ravi Kumar'], notes: 'Panel interview - excellent performance', status: 'completed', reminderSent: false, rating: 9, feedback: 'Exceptional candidate. Proceed with offer.' },
+    ],
+    statusHistory: [
+      { id: 'sh14', candidateId: 'c6', fromStatus: null, toStatus: 'new', userId: 'u1', userName: 'System', remarks: 'Application submitted', timestamp: '2026-07-02T08:00:00Z' },
+      { id: 'sh15', candidateId: 'c6', fromStatus: 'new', toStatus: 'shortlisted', userId: 'u1', userName: 'Rajesh Kumar', remarks: 'Impressive profile', timestamp: '2026-07-03T10:00:00Z' },
+      { id: 'sh16', candidateId: 'c6', fromStatus: 'shortlisted', toStatus: 'interview_scheduled', userId: 'u1', userName: 'Rajesh Kumar', remarks: '', timestamp: '2026-07-05T09:00:00Z' },
+      { id: 'sh17', candidateId: 'c6', fromStatus: 'interview_scheduled', toStatus: 'interview_completed', userId: 'u1', userName: 'Rajesh Kumar', remarks: 'Excellent interview', timestamp: '2026-07-08T13:00:00Z' },
+      { id: 'sh18', candidateId: 'c6', fromStatus: 'interview_completed', toStatus: 'offer_sent', userId: 'u1', userName: 'Priya Sharma', remarks: 'Offer letter sent', timestamp: '2026-07-14T11:00:00Z' },
+    ],
+  },
+  {
+    id: 'c7', applicationNumber: 'APP-2026-007', fullName: 'Vikash Kumar', gender: 'male', dob: '1993-04-18',
+    email: 'vikash.k@email.com', mobile: '+91 98765 10007', whatsapp: '+91 98765 10007', whatsappVerified: true, emailVerified: false,
+    address: '34 Koramangala', city: 'Bangalore', state: 'Karnataka', pin: '560095',
+    qualification: 'MHA', experience: '12 years', currentEmployer: 'Narayana Health', currentSalary: 160000, expectedSalary: 250000,
+    noticePeriod: '30 days', preferredDepartment: 'Administration', preferredLocation: 'Bangalore', languages: ['English', 'Hindi', 'Kannada'],
+    skills: ['Hospital Operations', 'Budget Management', 'Compliance', 'Team Leadership'],
+    jobId: 'j7', jobTitle: 'Hospital Administrator', department: 'Administration', applicationDate: '2026-07-06', status: 'selected',
+    score: { communication: 8, technicalSkill: 7, experience: 9, qualification: 8, personality: 8, hospitalCultureFit: 9, computerKnowledge: 7, leadership: 9, confidence: 8, overall: 8.2 },
+    assignedHR: 'Ravi Kumar', tags: ['senior', 'leadership'], isFutureCandidate: false, isBlacklisted: false, isFavorite: true,
+    remarks: [], communications: [], interviewHistory: [],
+    statusHistory: [
+      { id: 'sh19', candidateId: 'c7', fromStatus: null, toStatus: 'new', userId: 'u1', userName: 'System', remarks: 'Application submitted', timestamp: '2026-07-06T08:00:00Z' },
+      { id: 'sh20', candidateId: 'c7', fromStatus: 'new', toStatus: 'selected', userId: 'u1', userName: 'Ravi Kumar', remarks: 'Fast-tracked - exceptional candidate', timestamp: '2026-07-14T16:00:00Z' },
+    ],
+  },
+  {
+    id: 'c8', applicationNumber: 'APP-2026-008', fullName: 'Priyanka Das', gender: 'female', dob: '1994-09-05',
+    email: 'priyanka.d@email.com', mobile: '+91 98765 10008', whatsapp: '+91 98765 10008', whatsappVerified: true, emailVerified: true,
+    address: '67 Salt Lake', city: 'Kolkata', state: 'West Bengal', pin: '700091',
+    qualification: 'B.Sc Nursing', experience: '3 years', currentEmployer: 'AMRI Hospital', currentSalary: 38000, expectedSalary: 55000,
+    noticePeriod: '15 days', preferredDepartment: 'Nursing', preferredLocation: 'Mumbai', languages: ['English', 'Hindi', 'Bengali'],
+    skills: ['Pediatric Care', 'Child Psychology', 'Vaccination', 'Patient Education'],
+    jobId: 'j8', jobTitle: 'Pediatric Nurse', department: 'Nursing', applicationDate: '2026-07-13', status: 'new',
+    score: { communication: 7, technicalSkill: 6, experience: 5, qualification: 6, personality: 8, hospitalCultureFit: 7, computerKnowledge: 5, leadership: 4, confidence: 6, overall: 6.0 },
+    assignedHR: '', tags: [], isFutureCandidate: false, isBlacklisted: false, isFavorite: false,
+    remarks: [], communications: [], interviewHistory: [],
+    statusHistory: [
+      { id: 'sh21', candidateId: 'c8', fromStatus: null, toStatus: 'new', userId: 'u1', userName: 'System', remarks: 'Application submitted', timestamp: '2026-07-13T08:00:00Z' },
+    ],
+  },
+  {
+    id: 'c9', applicationNumber: 'APP-2026-009', fullName: 'Arjun Nair', gender: 'male', dob: '1991-12-01',
+    email: 'arjun.nair@email.com', mobile: '+91 98765 10009', whatsapp: '+91 98765 10009', whatsappVerified: false, emailVerified: false,
+    address: '90 Whitefield', city: 'Bangalore', state: 'Karnataka', pin: '560066',
+    qualification: 'GNM', experience: '2 years', currentEmployer: 'St. Johns Hospital', currentSalary: 30000, expectedSalary: 48000,
+    noticePeriod: 'Immediate', preferredDepartment: 'ICU', preferredLocation: 'Bangalore', languages: ['English', 'Hindi', 'Malayalam'],
+    skills: ['ICU Nursing', 'Basic Life Support'],
+    jobId: 'j2', jobTitle: 'ICU Nurse', department: 'Nursing', applicationDate: '2026-07-15', status: 'rejected',
+    score: { communication: 5, technicalSkill: 5, experience: 4, qualification: 4, personality: 6, hospitalCultureFit: 5, computerKnowledge: 4, leadership: 3, confidence: 5, overall: 4.7 },
+    assignedHR: 'Priya Sharma', tags: [], isFutureCandidate: false, isBlacklisted: false, isFavorite: false,
+    remarks: [
+      { id: 'r5', candidateId: 'c9', userId: 'u1', userName: 'Priya Sharma', type: 'overall', content: 'Insufficient experience for ICU role. Only 2 years GNM. Recommend for future opportunities in general ward.', createdAt: '2026-07-16T10:00:00Z', isPinned: false },
+    ],
+    communications: [], interviewHistory: [],
+    statusHistory: [
+      { id: 'sh22', candidateId: 'c9', fromStatus: null, toStatus: 'new', userId: 'u1', userName: 'System', remarks: 'Application submitted', timestamp: '2026-07-15T08:00:00Z' },
+      { id: 'sh23', candidateId: 'c9', fromStatus: 'new', toStatus: 'rejected', userId: 'u1', userName: 'Priya Sharma', remarks: 'Does not meet experience requirements', timestamp: '2026-07-16T10:00:00Z' },
+    ],
+  },
+  {
+    id: 'c10', applicationNumber: 'APP-2026-010', fullName: 'Meera Iyer', gender: 'female', dob: '1989-06-22',
+    email: 'meera.iyer@email.com', mobile: '+91 98765 10010', whatsapp: '+91 98765 10010', whatsappVerified: true, emailVerified: true,
+    address: '15 Anna Nagar', city: 'Chennai', state: 'Tamil Nadu', pin: '600040',
+    qualification: 'M.Sc Nursing', experience: '6 years', currentEmployer: 'Apollo Hospitals', currentSalary: 55000, expectedSalary: 72000,
+    noticePeriod: '30 days', preferredDepartment: 'Nursing', preferredLocation: 'Chennai', languages: ['English', 'Tamil', 'Hindi'],
+    skills: ['Critical Care', 'Nursing Management', 'Patient Safety', 'Quality Assurance'],
+    jobId: 'j2', jobTitle: 'ICU Nurse', department: 'Nursing', applicationDate: '2026-07-03', status: 'hired',
+    score: { communication: 8, technicalSkill: 8, experience: 8, qualification: 8, personality: 9, hospitalCultureFit: 9, computerKnowledge: 7, leadership: 8, confidence: 8, overall: 8.2 },
+    assignedHR: 'Mary Thomas', tags: ['hired', 'senior'], isFutureCandidate: false, isBlacklisted: false, isFavorite: false,
+    remarks: [], communications: [], interviewHistory: [],
+    statusHistory: [
+      { id: 'sh24', candidateId: 'c10', fromStatus: null, toStatus: 'new', userId: 'u1', userName: 'System', remarks: 'Application submitted', timestamp: '2026-07-03T08:00:00Z' },
+      { id: 'sh25', candidateId: 'c10', fromStatus: 'new', toStatus: 'hired', userId: 'u1', userName: 'Mary Thomas', remarks: 'Fast-track hire - exceptional candidate', timestamp: '2026-07-12T16:00:00Z' },
+    ],
+  },
+  {
+    id: 'c11', applicationNumber: 'APP-2026-011', fullName: 'Suresh Menon', gender: 'male', dob: '1986-02-14',
+    email: 'suresh.m@email.com', mobile: '+91 98765 10011', whatsapp: '+91 98765 10011', whatsappVerified: true, emailVerified: true,
+    address: '42 Panampilly Nagar', city: 'Kochi', state: 'Kerala', pin: '682016',
+    qualification: 'MBBS, MS Orthopedics', experience: '10 years', currentEmployer: 'Amrita Hospital', currentSalary: 200000, expectedSalary: 350000,
+    noticePeriod: '45 days', preferredDepartment: 'Orthopedics', preferredLocation: 'Mumbai', languages: ['English', 'Hindi', 'Malayalam'],
+    skills: ['Joint Replacement', 'Sports Medicine', 'Arthroscopy', 'Spine Surgery'],
+    jobId: 'j3', jobTitle: 'Orthopedic Surgeon', department: 'Orthopedics', applicationDate: '2026-07-01', status: 'future_opportunity',
+    score: { communication: 8, technicalSkill: 9, experience: 9, qualification: 9, personality: 7, hospitalCultureFit: 7, computerKnowledge: 6, leadership: 8, confidence: 8, overall: 8.0 },
+    assignedHR: 'Priya Sharma', tags: ['future_talent', 'senior'], isFutureCandidate: true, isBlacklisted: false, isFavorite: true,
+    remarks: [
+      { id: 'r6', candidateId: 'c11', userId: 'u1', userName: 'Priya Sharma', type: 'overall', content: 'Excellent orthopedic surgeon but cannot join for 45 days. Added to future talent pool.', createdAt: '2026-07-05T10:00:00Z', isPinned: true, colorLabel: 'blue' },
+    ],
+    communications: [], interviewHistory: [],
+    statusHistory: [
+      { id: 'sh26', candidateId: 'c11', fromStatus: null, toStatus: 'new', userId: 'u1', userName: 'System', remarks: 'Application submitted', timestamp: '2026-07-01T08:00:00Z' },
+      { id: 'sh27', candidateId: 'c11', fromStatus: 'new', toStatus: 'future_opportunity', userId: 'u1', userName: 'Priya Sharma', remarks: 'Added to talent pool', timestamp: '2026-07-05T10:00:00Z' },
+    ],
+  },
+  {
+    id: 'c12', applicationNumber: 'APP-2026-012', fullName: 'Neha Gupta', gender: 'female', dob: '1996-10-08',
+    email: 'neha.g@email.com', mobile: '+91 98765 10012', whatsapp: '+91 98765 10012', whatsappVerified: true, emailVerified: true,
+    address: '28 Dwarka Sector 12', city: 'Delhi', state: 'Delhi', pin: '110075',
+    qualification: 'B.Sc Lab Technology', experience: '1 year', currentEmployer: 'Quest Diagnostics', currentSalary: 22000, expectedSalary: 35000,
+    noticePeriod: 'Immediate', preferredDepartment: 'Laboratory', preferredLocation: 'Delhi', languages: ['English', 'Hindi'],
+    skills: ['Hematology', 'Basic Biochemistry'],
+    jobId: 'j5', jobTitle: 'Lab Technician', department: 'Laboratory', applicationDate: '2026-07-16', status: 'new',
+    score: { communication: 6, technicalSkill: 5, experience: 3, qualification: 5, personality: 7, hospitalCultureFit: 6, computerKnowledge: 6, leadership: 3, confidence: 5, overall: 5.1 },
+    assignedHR: '', tags: [], isFutureCandidate: false, isBlacklisted: false, isFavorite: false,
+    remarks: [], communications: [], interviewHistory: [],
+    statusHistory: [
+      { id: 'sh28', candidateId: 'c12', fromStatus: null, toStatus: 'new', userId: 'u1', userName: 'System', remarks: 'Application submitted', timestamp: '2026-07-16T08:00:00Z' },
+    ],
+  },
+];
+
+export const interviews: InterviewRecord[] = [
+  { id: 'iv1', candidateId: 'c1', candidateName: 'Rahul Verma', jobId: 'j1', jobTitle: 'Senior Cardiologist', type: 'video', date: '2026-07-20', time: '10:00', meetLink: 'https://meet.google.com/abc-defg-hij', panelMembers: ['Dr. Ananya Patel', 'Dr. Rajesh Kumar'], notes: 'Initial screening - technical round', status: 'scheduled', reminderSent: true },
+  { id: 'iv2', candidateId: 'c2', candidateName: 'Sneha Reddy', jobId: 'j2', jobTitle: 'ICU Nurse', type: 'online', date: '2026-07-18', time: '14:00', zoomLink: 'https://zoom.us/j/123456789', panelMembers: ['Sr. Mary Thomas'], notes: 'Practical skills assessment', status: 'scheduled', reminderSent: false },
+  { id: 'iv3', candidateId: 'c3', candidateName: 'Amit Patel', jobId: 'j3', jobTitle: 'Radiologist', type: 'video', date: '2026-07-12', time: '14:00', panelMembers: ['Dr. Vikram Singh'], notes: 'Technical interview', status: 'completed', reminderSent: false, rating: 7, feedback: 'Good knowledge, recommended for next round' },
+  { id: 'iv4', candidateId: 'c6', candidateName: 'Fatima Khan', jobId: 'j6', jobTitle: 'Emergency Physician', type: 'offline', date: '2026-07-08', time: '11:00', location: 'City Central Hospital, Mumbai', panelMembers: ['Dr. Rajesh Kumar', 'Dr. Priya Sharma', 'Mr. Ravi Kumar'], notes: 'Panel interview', status: 'completed', reminderSent: false, rating: 9, feedback: 'Exceptional candidate' },
+];
+
+export const notifications: Notification[] = [
+  { id: 'n1', type: 'application', title: 'New Application', message: 'Neha Gupta applied for Lab Technician', timestamp: '2026-07-16T08:00:00Z', read: false, candidateId: 'c12' },
+  { id: 'n2', type: 'interview', title: 'Interview Tomorrow', message: 'Interview with Sneha Reddy scheduled for tomorrow at 2:00 PM', timestamp: '2026-07-17T08:00:00Z', read: false, candidateId: 'c2' },
+  { id: 'n3', type: 'status_change', title: 'Candidate Hired', message: 'Meera Iyer has been hired for ICU Nurse position', timestamp: '2026-07-12T16:00:00Z', read: true, candidateId: 'c10' },
+  { id: 'n4', type: 'reminder', title: 'Follow Up Required', message: 'Follow up with Fatima Khan regarding offer acceptance', timestamp: '2026-07-15T09:00:00Z', read: false, candidateId: 'c6' },
+  { id: 'n5', type: 'application', title: 'New Application', message: 'Deepak Singh applied for Lab Technician', timestamp: '2026-07-14T08:00:00Z', read: true, candidateId: 'c5' },
+];
+
+export const auditLogs: AuditLog[] = [
+  { id: 'a1', userId: 'u1', userName: 'Priya Sharma', action: 'Status Change', entity: 'Candidate', entityId: 'c6', details: 'Changed status from Interview Completed to Offer Sent for Fatima Khan', timestamp: '2026-07-14T11:00:00Z' },
+  { id: 'a2', userId: 'u1', userName: 'Priya Sharma', action: 'Remark Added', entity: 'Candidate', entityId: 'c1', details: 'Added overall remark for Rahul Verma', timestamp: '2026-07-11T10:30:00Z' },
+  { id: 'a3', userId: 'u1', userName: 'Rajesh Kumar', action: 'Interview Scheduled', entity: 'Candidate', entityId: 'c1', details: 'Scheduled video interview for Rahul Verma on 2026-07-20', timestamp: '2026-07-15T11:00:00Z' },
+  { id: 'a4', userId: 'u1', userName: 'Priya Sharma', action: 'Candidate Rejected', entity: 'Candidate', entityId: 'c9', details: 'Rejected Arjun Nair - insufficient experience', timestamp: '2026-07-16T10:00:00Z' },
+  { id: 'a5', userId: 'u1', userName: 'System', action: 'Login', entity: 'User', entityId: 'u1', details: 'Priya Sharma logged in', timestamp: '2026-07-17T08:30:00Z' },
+  { id: 'a6', userId: 'u1', userName: 'Mary Thomas', action: 'Candidate Hired', entity: 'Candidate', entityId: 'c10', details: 'Meera Iyer hired for ICU Nurse position', timestamp: '2026-07-12T16:00:00Z' },
+  { id: 'a7', userId: 'u1', userName: 'Priya Sharma', action: 'Job Created', entity: 'Vacancy', entityId: 'j6', details: 'Created Emergency Physician position', timestamp: '2026-07-01T09:00:00Z' },
+  { id: 'a8', userId: 'u1', userName: 'Ravi Kumar', action: 'Status Change', entity: 'Candidate', entityId: 'c7', details: 'Fast-tracked Vikash Kumar to Selected', timestamp: '2026-07-14T16:00:00Z' },
+];
+
+export const templates: Template[] = [
+  { id: 't1', name: 'Application Received', type: 'whatsapp', content: 'Hello {{name}}, thank you for applying for the {{position}} position at {{hospital}}. We have received your application and will review it shortly.', variables: ['name', 'position', 'hospital'], createdAt: '2026-06-01', updatedAt: '2026-06-01' },
+  { id: 't2', name: 'Interview Invite', type: 'whatsapp', content: 'Dear {{name}}, you have been shortlisted for the {{position}} position. Your interview is scheduled on {{date}} at {{time}}. {{location}}. Please confirm your availability.', variables: ['name', 'position', 'date', 'time', 'location'], createdAt: '2026-06-01', updatedAt: '2026-06-15' },
+  { id: 't3', name: 'Document Request', type: 'whatsapp', content: 'Hi {{name}}, please share the following documents for your application: {{documents}}. You can reply to this message with the documents.', variables: ['name', 'documents'], createdAt: '2026-06-01', updatedAt: '2026-06-01' },
+  { id: 't4', name: 'Offer Letter', type: 'email', subject: 'Offer Letter - {{position}} at {{hospital}}', content: 'Dear {{name}},\n\nWe are pleased to offer you the position of {{position}} at {{hospital}}. Please find the offer letter attached.\n\nBest regards,\nHR Team', variables: ['name', 'position', 'hospital'], createdAt: '2026-06-01', updatedAt: '2026-06-01' },
+  { id: 't5', name: 'Rejection', type: 'email', subject: 'Application Update - {{position}}', content: 'Dear {{name}},\n\nThank you for your interest in the {{position}} position. After careful review, we have decided to move forward with other candidates.\n\nWe wish you the best in your future endeavors.\n\nBest regards,\nHR Team', variables: ['name', 'position'], createdAt: '2026-06-01', updatedAt: '2026-06-01' },
+  { id: 't6', name: 'Future Opportunity', type: 'whatsapp', content: 'Hi {{name}}, while we cannot proceed with your application at this time, we have added you to our talent pool for future opportunities matching your profile. We will reach out when suitable positions become available.', variables: ['name'], createdAt: '2026-06-01', updatedAt: '2026-06-01' },
+  { id: 't7', name: 'Joining Reminder', type: 'whatsapp', content: 'Dear {{name}}, this is a friendly reminder about your joining date on {{date}} at {{location}}. Please bring {{documents}}. We look forward to welcoming you!', variables: ['name', 'date', 'location', 'documents'], createdAt: '2026-06-01', updatedAt: '2026-06-01' },
+];
