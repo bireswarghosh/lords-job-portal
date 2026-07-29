@@ -142,7 +142,30 @@ export default function LoginPage() {
               )}
             </button>
 
-
+            {/* Quick Demo Login Options */}
+            <div className="pt-4 border-t border-neutral-200 mt-6">
+              <p className="text-xs font-semibold text-neutral-500 uppercase tracking-wider mb-2.5">
+                Quick Demo Accounts
+              </p>
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  onClick={() => { setEmail("soyeb.alam@lordshealthcare.org"); setPassword("123456"); }}
+                  className="px-3 py-2 text-xs font-medium bg-neutral-100 hover:bg-neutral-200 rounded-lg text-neutral-700 text-left transition-colors"
+                >
+                  <div className="font-semibold">Tenant Admin</div>
+                  <div className="text-[10px] text-neutral-500 truncate">soyeb.alam@...</div>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => { setEmail("appstrice@gmail.com"); setPassword("123456"); }}
+                  className="px-3 py-2 text-xs font-medium bg-neutral-100 hover:bg-neutral-200 rounded-lg text-neutral-700 text-left transition-colors"
+                >
+                  <div className="font-semibold">Super Admin</div>
+                  <div className="text-[10px] text-neutral-500 truncate">appstrice@...</div>
+                </button>
+              </div>
+            </div>
           </form>
         </div>
       </div>

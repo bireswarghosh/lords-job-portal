@@ -4,8 +4,12 @@ import { db } from "@/lib/db";
 
 export async function loginUser({ email, password }: { email: string; password: string }) {
   try {
+    const cleanEmail = email ? email.trim() : "";
     const user = await db.user.findFirst({
-      where: { email, isActive: true },
+      where: {
+        email: { equals: cleanEmail, mode: "insensitive" },
+        isActive: true,
+      },
       select: {
         id: true,
         name: true,
@@ -27,7 +31,11 @@ export async function loginUser({ email, password }: { email: string; password: 
       return { success: false, error: "Invalid email or password" };
     }
 
-    await db.user.update({ where: { id: user.id }, data: { lastLogin: new Date() } });
+    try {
+      await db.user.update({ where: { id: user.id }, data: { lastLogin: new Date() } });
+    } catch (e) {
+      console.warn("Could not update lastLogin timestamp:", e);
+    }
 
     return {
       success: true,
@@ -45,7 +53,7 @@ export async function loginUser({ email, password }: { email: string; password: 
     };
   } catch (error) {
     console.error("Login error:", error);
-    return { success: false, error: "Login failed. Please try again." };
+    return { success: false, error: "Login failed. Please check database connection and try again." };
   }
 }
 

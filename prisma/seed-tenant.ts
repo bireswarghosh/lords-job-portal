@@ -1,8 +1,10 @@
 import { PrismaClient } from "../src/generated/prisma/client.js";
 import { PrismaPg } from "@prisma/adapter-pg";
+import pg from "pg";
 import "dotenv/config";
 
-const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
+const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL });
+const adapter = new PrismaPg(pool);
 const prisma = new PrismaClient({ adapter });
 
 const TENANT_ID = "cmrpd6mgi00001cfo6t4njhm1";
