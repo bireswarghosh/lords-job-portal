@@ -8,7 +8,7 @@ import {
   Upload, FileText, Send, Shield, Globe, User, Mail, Phone, MessageSquare,
   Loader2, X,
 } from "lucide-react";
-import { useSearchParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import { getPublicJobs } from "@/app/actions/jobs";
 import { getDepartments } from "@/app/actions/departments";
 import { createCandidate } from "@/app/actions/candidates";
@@ -60,9 +60,11 @@ type DBJob = {
 
 type Department = { id: string; name: string };
 
-function JobDetailContent({ params }: { params: Promise<{ slug: string }> }) {
+function JobDetailContent() {
+  const routeParams = useParams();
   const searchParams = useSearchParams();
   const jobId = searchParams.get("id");
+  const slug = (routeParams?.slug as string) || "";
 
   const [job, setJob] = useState<DBJob | null>(null);
   const [departments, setDepartments] = useState<Department[]>([]);
@@ -82,7 +84,7 @@ function JobDetailContent({ params }: { params: Promise<{ slug: string }> }) {
     setLoading(true);
     const jobsRes = await getPublicJobs();
     if (jobsRes.success && jobsRes.data) {
-      const found = jobsRes.data.find((j: DBJob) => j.id === jobId || slugify(j.title) === (params as unknown as { slug: string }).slug);
+      const found = jobsRes.data.find((j: DBJob) => (jobId && j.id === jobId) || (slug && slugify(j.title) === slug));
       setJob(found as DBJob | null);
       if (found) {
         const deptRes = await getDepartments((found as DBJob).tenantId);
@@ -90,7 +92,7 @@ function JobDetailContent({ params }: { params: Promise<{ slug: string }> }) {
       }
     }
     setLoading(false);
-  }, [jobId, params]);
+  }, [jobId, slug]);
 
   useEffect(() => { fetchData(); }, [fetchData]);
 
@@ -510,10 +512,10 @@ function JobDetailContent({ params }: { params: Promise<{ slug: string }> }) {
   );
 }
 
-export default function JobDetailPage({ params }: { params: Promise<{ slug: string }> }) {
+export default function JobDetailPage() {
   return (
     <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-slate-50"><div className="text-center"><Loader2 className="w-8 h-8 text-blue-600 animate-spin mx-auto" /><p className="text-slate-500 mt-3">Loading...</p></div></div>}>
-      <JobDetailContent params={params} />
+      <JobDetailContent />
     </Suspense>
   );
 }

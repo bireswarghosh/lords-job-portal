@@ -2,7 +2,7 @@
 
 import { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Edit3, Trash2, Pause, Play, MapPin, Calendar, IndianRupee, Users, Briefcase, Save, X, Copy, Archive } from "lucide-react";
+import { ArrowLeft, Edit3, Trash2, Pause, Play, MapPin, Calendar, IndianRupee, Users, Briefcase, Save, X, Copy, Archive, ExternalLink, Check, Link as LinkIcon } from "lucide-react";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Button } from "@/components/ui/Button";
 import { Card, CardHeader, CardBody } from "@/components/ui/Card";
@@ -44,6 +44,10 @@ export default function VacancyDetailPage({ params }: { params: Promise<{ id: st
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteError, setDeleteError] = useState<string | null>(null);
   const [deleting, setDeleting] = useState(false);
+  const [copiedLink, setCopiedLink] = useState(false);
+
+  const slugify = (title: string) => title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+  const publicJobUrl = typeof window !== "undefined" && job ? `${window.location.origin}/careers/${slugify(job.title)}?id=${job.id}` : "";
 
   useEffect(() => {
     async function load() {
@@ -164,6 +168,32 @@ export default function VacancyDetailPage({ params }: { params: Promise<{ id: st
           </div>
         }
       />
+
+      {publicJobUrl && (
+        <Card className="mb-6">
+          <CardBody>
+            <div className="flex items-center justify-between gap-4 flex-wrap">
+              <div className="flex items-center gap-3 min-w-0">
+                <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-blue-50 text-blue-600 shrink-0">
+                  <LinkIcon className="w-4 h-4" />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-xs font-semibold text-text-primary uppercase tracking-wider">Public Shareable Job Link</p>
+                  <p className="text-xs text-text-secondary truncate mt-0.5">{publicJobUrl}</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2 shrink-0">
+                <a href={publicJobUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors">
+                  <ExternalLink className="w-3.5 h-3.5" />Open Link
+                </a>
+                <button onClick={() => { navigator.clipboard.writeText(publicJobUrl); setCopiedLink(true); setTimeout(() => setCopiedLink(false), 2000); }} className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-text-secondary bg-background border border-border rounded-lg hover:bg-surface transition-colors cursor-pointer">
+                  {copiedLink ? <><Check className="w-3.5 h-3.5 text-green-600" />Copied!</> : <><Copy className="w-3.5 h-3.5" />Copy Link</>}
+                </button>
+              </div>
+            </div>
+          </CardBody>
+        </Card>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">

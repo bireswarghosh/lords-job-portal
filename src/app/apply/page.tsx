@@ -47,6 +47,7 @@ const initialFormData: FormData = {
 function ApplyForm() {
   const searchParams = useSearchParams();
   const tenantSlug = searchParams.get("tenant");
+  const urlJobId = searchParams.get("jobId") || searchParams.get("job");
 
   const [tenant, setTenant] = useState<{ id: string; name: string } | null>(null);
   const [jobs, setJobs] = useState<DBJob[]>([]);
@@ -61,6 +62,7 @@ function ApplyForm() {
 
   const fetchData = useCallback(async () => {
     setLoading(true);
+    let fetchedJobs: DBJob[] = [];
     if (tenantSlug) {
       const tenantRes = await getTenantBySlug(tenantSlug);
       if (!tenantRes.success) { setNotFound(true); setLoading(false); return; }
@@ -70,18 +72,22 @@ function ApplyForm() {
         getPublicJobsByTenant(t.id),
         getDepartments(t.id),
       ]);
-      if (jobsRes.success) setJobs(jobsRes.data as unknown as DBJob[]);
+      if (jobsRes.success) fetchedJobs = jobsRes.data as unknown as DBJob[];
       if (deptRes.success) setDepartments(deptRes.data as unknown as Department[]);
     } else {
       const [jobsRes, deptRes] = await Promise.all([
         getPublicJobs(),
         getDepartments(),
       ]);
-      if (jobsRes.success) setJobs(jobsRes.data as unknown as DBJob[]);
+      if (jobsRes.success) fetchedJobs = jobsRes.data as unknown as DBJob[];
       if (deptRes.success) setDepartments(deptRes.data as unknown as Department[]);
     }
+    setJobs(fetchedJobs);
+    if (urlJobId && fetchedJobs.some((j) => j.id === urlJobId)) {
+      setFormData((prev) => ({ ...prev, jobId: urlJobId }));
+    }
     setLoading(false);
-  }, [tenantSlug]);
+  }, [tenantSlug, urlJobId]);
 
   useEffect(() => { fetchData(); }, [fetchData]);
 

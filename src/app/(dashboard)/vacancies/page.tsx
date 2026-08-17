@@ -40,10 +40,15 @@ const EMPTY_JOB = {
   benefits: "", hiringManager: "", expiryDate: "", isUrgent: false,
 };
 
+function slugify(title: string): string {
+  return title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+}
+
 export default function VacanciesPage() {
   const router = useRouter();
   const { user } = useAuth();
   const [copied, setCopied] = useState(false);
+  const [copiedJobId, setCopiedJobId] = useState<string | null>(null);
 
   const applyUrl = user?.tenantSlug
     ? `${typeof window !== "undefined" ? window.location.origin : ""}/careers/t/${user.tenantSlug}`
@@ -191,8 +196,12 @@ export default function VacanciesPage() {
       key: "actions", header: "Actions",
       render: (job) => {
         const j = job as unknown as JobWithRelations;
+        const jobPublicUrl = `${typeof window !== "undefined" ? window.location.origin : ""}/careers/${slugify(j.title)}?id=${j.id}`;
         return (
           <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
+            <button onClick={() => { navigator.clipboard.writeText(jobPublicUrl); setCopiedJobId(j.id); setTimeout(() => setCopiedJobId(null), 2000); }} className="p-1.5 rounded-lg text-text-secondary hover:text-primary hover:bg-primary/5 transition-colors cursor-pointer" title="Copy Public Link">
+              {copiedJobId === j.id ? <Check className="w-4 h-4 text-green-600" /> : <LinkIcon className="w-4 h-4" />}
+            </button>
             <button onClick={() => router.push(`/vacancies/${j.id}`)} className="p-1.5 rounded-lg text-text-secondary hover:text-primary hover:bg-primary/5 transition-colors cursor-pointer" title="Edit">
               <Pencil className="w-4 h-4" />
             </button>
@@ -201,12 +210,18 @@ export default function VacanciesPage() {
                 <MoreVertical className="w-4 h-4" />
               </button>
             } items={[
+              { kind: "item", id: "copy_link", label: "Copy Public Link", icon: <LinkIcon className="w-4 h-4" /> },
               { kind: "item", id: "pause_toggle", label: j.status === "paused" ? "Resume" : "Pause", icon: j.status === "paused" ? <Play className="w-4 h-4" /> : <Pause className="w-4 h-4" /> },
               { kind: "item", id: "close", label: "Close Job", icon: <Archive className="w-4 h-4" /> },
               { kind: "separator" },
               { kind: "item", id: "delete", label: "Delete", icon: <Trash2 className="w-4 h-4" />, danger: true },
             ]} onSelect={(id) => {
-              if (id === "pause_toggle") handleStatusChange(j.id, j.status === "paused" ? "open" : "paused");
+              if (id === "copy_link") {
+                navigator.clipboard.writeText(jobPublicUrl);
+                setCopiedJobId(j.id);
+                setTimeout(() => setCopiedJobId(null), 2000);
+              }
+              else if (id === "pause_toggle") handleStatusChange(j.id, j.status === "paused" ? "open" : "paused");
               else if (id === "close") handleStatusChange(j.id, "closed");
               else if (id === "delete") handleDeleteJob(j.id);
             }} />

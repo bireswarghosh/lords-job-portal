@@ -1,5 +1,4 @@
-"use client";
-
+import { cookies } from "next/headers";
 import Link from "next/link";
 import {
   CheckCircle2,
@@ -11,7 +10,8 @@ import {
   ArrowRight,
 } from "lucide-react";
 
-export default function ThankYouPage() {
+export default async function ThankYouPage() {
+  await cookies();
   const applicationNumber = `APP-${new Date().getFullYear()}-${String(Math.floor(Math.random() * 9999)).padStart(4, "0")}`;
 
   return (
