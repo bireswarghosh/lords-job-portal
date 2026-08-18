@@ -182,29 +182,37 @@ export default function CareersLayout({
               <h3 className="text-white font-semibold text-sm uppercase tracking-wider mb-4">
                 Contact Us
               </h3>
+              <div className="mb-3">
+                <p className="text-sm text-white font-semibold leading-snug">LORDS HEALTH CARE NURSING HOME</p>
+                <p className="text-xs text-slate-400 mt-0.5">Cert. No: 22DQJX84 &nbsp;|&nbsp; ISO 9001:2015</p>
+              </div>
               <ul className="space-y-3">
                 <li className="flex items-start gap-3">
                   <MapPin className="w-4 h-4 mt-0.5 text-blue-400 shrink-0" />
                   <span className="text-sm">
-                    123 Medical Center Road, Mumbai 400001
+                    13/3, Circular 2nd Bye Lane, Kona Expressway, Shibpur, Howrah - 711102 (Near Nabanna)
                   </span>
                 </li>
                 <li className="flex items-center gap-3">
                   <Phone className="w-4 h-4 text-blue-400 shrink-0" />
-                  <a href="tel:+912223456789" className="text-sm hover:text-white transition-colors">
-                    +91 22 2345 6789
-                  </a>
+                  <div className="flex flex-col gap-0.5">
+                    <a href="tel:8272904444" className="text-sm hover:text-white transition-colors">8272904444</a>
+                    <a href="tel:7003378414" className="text-sm hover:text-white transition-colors">7003378414</a>
+                    <a href="tel:8902464422" className="text-sm hover:text-white transition-colors">8902464422</a>
+                  </div>
                 </li>
                 <li className="flex items-center gap-3">
                   <Mail className="w-4 h-4 text-blue-400 shrink-0" />
-                  <a href="mailto:careers@lordsjobs.com" className="text-sm hover:text-white transition-colors">
-                    careers@lordsjobs.com
+                  <a href="mailto:patientdesk@lordshealthcare.org" className="text-sm hover:text-white transition-colors">
+                    patientdesk@lordshealthcare.org
                   </a>
                 </li>
               </ul>
               <div className="mt-5 p-3 rounded-lg bg-slate-800/60 border border-slate-700/50">
-                <p className="text-xs text-slate-400 mb-1">HR Helpline</p>
-                <p className="text-sm text-white font-semibold">+91 98765 43210</p>
+                <p className="text-xs text-slate-400 mb-1">Toll Free</p>
+                <p className="text-sm text-white font-semibold">
+                  <a href="tel:18003090895" className="hover:text-blue-400 transition-colors">1800 309 0895</a>
+                </p>
                 <p className="text-xs text-slate-500 mt-1">Mon - Sat, 9:00 AM - 6:00 PM</p>
               </div>
             </div>
