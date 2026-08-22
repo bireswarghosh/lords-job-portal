@@ -15,36 +15,44 @@ type CandidateFilter = {
 
 export async function getCandidates(filters?: CandidateFilter, tenantId?: string | null) {
   try {
-    const where: Record<string, unknown> = {
-      ...tenantFilter(tenantId),
-    };
+    const whereConditions: Record<string, unknown>[] = [];
+
+    if (tenantId) {
+      whereConditions.push({
+        OR: [{ tenantId }, { job: { tenantId } }],
+      });
+    }
 
     if (filters?.status) {
-      where.status = filters.status;
+      whereConditions.push({ status: filters.status });
     }
     if (filters?.jobId) {
-      where.jobId = filters.jobId;
+      whereConditions.push({ jobId: filters.jobId });
     }
     if (filters?.assignedHRId) {
-      where.assignedHRId = filters.assignedHRId;
+      whereConditions.push({ assignedHRId: filters.assignedHRId });
     }
     if (filters?.isFavorite !== undefined) {
-      where.isFavorite = filters.isFavorite;
+      whereConditions.push({ isFavorite: filters.isFavorite });
     }
     if (filters?.isBlacklisted !== undefined) {
-      where.isBlacklisted = filters.isBlacklisted;
+      whereConditions.push({ isBlacklisted: filters.isBlacklisted });
     }
     if (filters?.departmentId) {
-      where.job = { departmentId: filters.departmentId };
+      whereConditions.push({ job: { departmentId: filters.departmentId } });
     }
     if (filters?.search) {
-      where.OR = [
-        { fullName: { contains: filters.search, mode: "insensitive" } },
-        { email: { contains: filters.search, mode: "insensitive" } },
-        { mobile: { contains: filters.search, mode: "insensitive" } },
-        { applicationNumber: { contains: filters.search, mode: "insensitive" } },
-      ];
+      whereConditions.push({
+        OR: [
+          { fullName: { contains: filters.search, mode: "insensitive" } },
+          { email: { contains: filters.search, mode: "insensitive" } },
+          { mobile: { contains: filters.search, mode: "insensitive" } },
+          { applicationNumber: { contains: filters.search, mode: "insensitive" } },
+        ],
+      });
     }
+
+    const where = whereConditions.length > 0 ? { AND: whereConditions } : {};
 
     const candidates = await db.candidate.findMany({
       where,
@@ -67,8 +75,13 @@ export async function getCandidates(filters?: CandidateFilter, tenantId?: string
 
 export async function getCandidateById(id: string, tenantId?: string | null) {
   try {
+    const whereCondition: Record<string, unknown> = { id };
+    if (tenantId) {
+      whereCondition.OR = [{ tenantId }, { job: { tenantId } }];
+    }
+
     const candidate = await db.candidate.findFirst({
-      where: { id, ...tenantFilter(tenantId) },
+      where: whereCondition,
       include: {
         job: {
           include: { department: true, branch: true },
@@ -156,12 +169,20 @@ export async function createCandidate(data: {
   assignedHRId?: string;
 }, tenantId?: string | null) {
   try {
+    let finalTenantId = tenantId ?? null;
+    if (!finalTenantId && data.jobId) {
+      const targetJob = await db.job.findUnique({ where: { id: data.jobId }, select: { tenantId: true } });
+      if (targetJob?.tenantId) {
+        finalTenantId = targetJob.tenantId;
+      }
+    }
+
     const applicationNumber = await generateApplicationNumber();
 
     const candidate = await db.candidate.create({
       data: {
         applicationNumber,
-        tenantId: tenantId ?? null,
+        tenantId: finalTenantId,
         fullName: data.fullName,
         gender: data.gender,
         email: data.email,

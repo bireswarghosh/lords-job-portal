@@ -136,13 +136,27 @@ export async function createTenantAdminUser(data: {
   password: string;
 }) {
   try {
+    const cleanEmail = data.email.trim().toLowerCase();
+    const cleanPassword = data.password.trim();
+
+    const existing = await db.user.findFirst({
+      where: {
+        email: { equals: cleanEmail, mode: "insensitive" },
+        tenantId: data.tenantId,
+      },
+    });
+
+    if (existing) {
+      return { success: false, error: "A user with this email already exists for this client." };
+    }
+
     const user = await db.user.create({
       data: {
         tenantId: data.tenantId,
-        name: data.name,
-        email: data.email,
-        password: data.password,
-        role: "super_admin",
+        name: data.name.trim(),
+        email: cleanEmail,
+        password: cleanPassword,
+        role: "tenant_admin",
         isActive: true,
       },
     });

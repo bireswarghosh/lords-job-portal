@@ -3,13 +3,21 @@
 import { db } from "@/lib/db";
 import { tenantFilter } from "@/lib/tenant";
 
+function candidateTenantWhere(tenantId?: string | null): Record<string, unknown> {
+  if (!tenantId) return {};
+  return {
+    OR: [{ tenantId }, { job: { tenantId } }],
+  };
+}
+
 export async function getDashboardStats(tenantId?: string | null) {
   try {
     const now = new Date();
     const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
 
-    const tf = tenantFilter(tenantId);
+    const jobTf = tenantFilter(tenantId);
+    const candTf = candidateTenantWhere(tenantId);
 
     const [
       totalVacancies,
@@ -21,18 +29,18 @@ export async function getDashboardStats(tenantId?: string | null) {
       selected,
       rejected,
     ] = await Promise.all([
-      db.job.aggregate({ where: { ...tf }, _sum: { vacancies: true } }),
-      db.job.count({ where: { ...tf, status: "open" } }),
+      db.job.aggregate({ where: { ...jobTf }, _sum: { vacancies: true } }),
+      db.job.count({ where: { ...jobTf, status: "open" } }),
       db.candidate.count({
-        where: { ...tf, applicationDate: { gte: todayStart } },
+        where: { AND: [candTf, { applicationDate: { gte: todayStart } }] },
       }),
       db.candidate.count({
-        where: { ...tf, applicationDate: { gte: monthStart } },
+        where: { AND: [candTf, { applicationDate: { gte: monthStart } }] },
       }),
-      db.candidate.count({ where: { ...tf, status: "pending_review" } }),
-      db.candidate.count({ where: { ...tf, status: "interview_scheduled" } }),
-      db.candidate.count({ where: { ...tf, status: "selected" } }),
-      db.candidate.count({ where: { ...tf, status: "rejected" } }),
+      db.candidate.count({ where: { AND: [candTf, { status: "pending_review" }] } }),
+      db.candidate.count({ where: { AND: [candTf, { status: "interview_scheduled" }] } }),
+      db.candidate.count({ where: { AND: [candTf, { status: "selected" }] } }),
+      db.candidate.count({ where: { AND: [candTf, { status: "rejected" }] } }),
     ]);
 
     return {
@@ -56,9 +64,10 @@ export async function getDashboardStats(tenantId?: string | null) {
 
 export async function getHiringFunnelData(tenantId?: string | null) {
   try {
+    const candTf = candidateTenantWhere(tenantId);
     const statusCounts = await db.candidate.groupBy({
       by: ["status"],
-      where: { ...tenantFilter(tenantId) },
+      where: candTf,
       _count: { id: true },
       orderBy: { _count: { id: "desc" } },
     });
@@ -115,7 +124,7 @@ export async function getDepartmentChartData(tenantId?: string | null) {
 export async function getRecentApplicants(limit: number = 10, tenantId?: string | null) {
   try {
     const candidates = await db.candidate.findMany({
-      where: { ...tenantFilter(tenantId) },
+      where: candidateTenantWhere(tenantId),
       take: limit,
       orderBy: { createdAt: "desc" },
       include: {
@@ -140,15 +149,22 @@ export async function getUpcomingInterviews(limit: number = 10, tenantId?: strin
     const now = new Date();
     const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
 
+    const itvWhere: Record<string, unknown> = {
+      status: "scheduled",
+      OR: [
+        { date: { gt: todayStr } },
+        { date: todayStr },
+      ],
+    };
+    if (tenantId) {
+      itvWhere.OR = [
+        { tenantId, status: "scheduled", date: { gte: todayStr } },
+        { candidate: { tenantId }, status: "scheduled", date: { gte: todayStr } },
+      ];
+    }
+
     const interviews = await db.interviewRecord.findMany({
-      where: {
-        ...tenantFilter(tenantId),
-        status: "scheduled",
-        OR: [
-          { date: { gt: todayStr } },
-          { date: todayStr },
-        ],
-      },
+      where: itvWhere,
       take: limit,
       orderBy: [{ date: "asc" }, { time: "asc" }],
       include: {
@@ -177,27 +193,27 @@ export async function getKPIDetail(filter: string, tenantId?: string | null) {
     const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
 
-    const tf = tenantFilter(tenantId);
-    let where: Record<string, unknown> = { ...tf };
+    const candTf = candidateTenantWhere(tenantId);
+    let filterCondition: Record<string, unknown> = {};
 
     switch (filter) {
       case "applications_today":
-        where = { ...tf, applicationDate: { gte: todayStart } };
+        filterCondition = { applicationDate: { gte: todayStart } };
         break;
       case "applications_month":
-        where = { ...tf, applicationDate: { gte: monthStart } };
+        filterCondition = { applicationDate: { gte: monthStart } };
         break;
       case "pending_review":
-        where = { ...tf, status: "pending_review" };
+        filterCondition = { status: "pending_review" };
         break;
       case "interview_scheduled":
-        where = { ...tf, status: "interview_scheduled" };
+        filterCondition = { status: "interview_scheduled" };
         break;
       case "selected":
-        where = { ...tf, status: "selected" };
+        filterCondition = { status: "selected" };
         break;
       case "rejected":
-        where = { ...tf, status: "rejected" };
+        filterCondition = { status: "rejected" };
         break;
       case "open_positions":
         return { success: true, data: [], type: "jobs" };
@@ -206,6 +222,8 @@ export async function getKPIDetail(filter: string, tenantId?: string | null) {
       default:
         return { success: true, data: [], type: "unknown" };
     }
+
+    const where = tenantId ? { AND: [candTf, filterCondition] } : filterCondition;
 
     const candidates = await db.candidate.findMany({
       where,

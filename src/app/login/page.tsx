@@ -150,11 +150,11 @@ export default function LoginPage() {
               <div className="grid grid-cols-2 gap-2">
                 <button
                   type="button"
-                  onClick={() => { setEmail("soyeb.alam@lordshealthcare.org"); setPassword("123456"); }}
+                  onClick={() => { setEmail("soyab.alam@lordshealthcare.org"); setPassword("123456"); }}
                   className="px-3 py-2 text-xs font-medium bg-neutral-100 hover:bg-neutral-200 rounded-lg text-neutral-700 text-left transition-colors"
                 >
                   <div className="font-semibold">Tenant Admin</div>
-                  <div className="text-[10px] text-neutral-500 truncate">soyeb.alam@...</div>
+                  <div className="text-[10px] text-neutral-500 truncate">soyab.alam@...</div>
                 </button>
                 <button
                   type="button"

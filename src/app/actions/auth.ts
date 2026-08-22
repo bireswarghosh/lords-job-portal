@@ -5,10 +5,11 @@ import { db } from "@/lib/db";
 export async function loginUser({ email, password }: { email: string; password: string }) {
   try {
     const cleanEmail = email ? email.trim() : "";
+    const cleanPassword = password ? password.trim() : "";
+
     const user = await db.user.findFirst({
       where: {
         email: { equals: cleanEmail, mode: "insensitive" },
-        isActive: true,
       },
       select: {
         id: true,
@@ -19,7 +20,8 @@ export async function loginUser({ email, password }: { email: string; password: 
         department: true,
         avatar: true,
         tenantId: true,
-        tenant: { select: { name: true, slug: true } },
+        isActive: true,
+        tenant: { select: { name: true, slug: true, isActive: true } },
       },
     });
 
@@ -27,7 +29,15 @@ export async function loginUser({ email, password }: { email: string; password: 
       return { success: false, error: "Invalid email or password" };
     }
 
-    if (user.password !== password) {
+    if (!user.isActive) {
+      return { success: false, error: "Your account is deactivated. Please contact your administrator." };
+    }
+
+    if (user.tenant && !user.tenant.isActive) {
+      return { success: false, error: "Your client account is inactive. Please contact support." };
+    }
+
+    if (user.password.trim() !== cleanPassword) {
       return { success: false, error: "Invalid email or password" };
     }
 
