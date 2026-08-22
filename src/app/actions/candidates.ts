@@ -2,6 +2,7 @@
 
 import { db } from "@/lib/db";
 import { tenantFilter } from "@/lib/tenant";
+import { sendCandidateApplicationWhatsApp, sendCandidateScoreWhatsApp } from "@/lib/whatsapp";
 
 type CandidateFilter = {
   status?: string;
@@ -217,6 +218,17 @@ export async function createCandidate(data: {
         job: true,
       },
     });
+
+    // Trigger Condition 1: WhatsApp notifications for Candidate Job Application
+    sendCandidateApplicationWhatsApp({
+      candidateId: candidate.id,
+      fullName: candidate.fullName,
+      mobile: candidate.mobile,
+      whatsapp: candidate.whatsapp,
+      jobTitle: candidate.job?.title || "Job Position",
+      applicationNumber: candidate.applicationNumber,
+      tenantId: candidate.tenantId,
+    }).catch((err) => console.error("WhatsApp application notification error:", err));
 
     return { success: true, data: candidate };
   } catch (error) {
@@ -470,6 +482,12 @@ export async function updateCandidateScore(
         overall,
       },
     });
+
+    // Trigger Condition 3: WhatsApp notifications for Candidate Scoring
+    sendCandidateScoreWhatsApp({
+      candidateId,
+      score: { overall: score.overall },
+    }).catch((err) => console.error("WhatsApp score notification error:", err));
 
     return { success: true, data: score };
   } catch (error) {

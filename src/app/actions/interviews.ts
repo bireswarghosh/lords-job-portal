@@ -2,6 +2,7 @@
 
 import { db } from "@/lib/db";
 import { tenantFilter } from "@/lib/tenant";
+import { sendInterviewScheduledWhatsApp } from "@/lib/whatsapp";
 
 type InterviewFilter = {
   status?: string;
@@ -107,6 +108,12 @@ export async function scheduleInterview(data: {
       }),
     ]);
 
+    // Trigger Condition 2: WhatsApp notifications for Interview Scheduled
+    sendInterviewScheduledWhatsApp({
+      interviewId: interview.id,
+      candidateId: interview.candidateId,
+    }).catch((err) => console.error("WhatsApp interview notification error:", err));
+
     return { success: true, data: interview };
   } catch (error) {
     console.error("Error scheduling interview:", error);
@@ -136,6 +143,12 @@ export async function updateInterview(
         candidate: true,
       },
     });
+
+    // Trigger Condition 2: WhatsApp notifications for Interview Rescheduled
+    sendInterviewScheduledWhatsApp({
+      interviewId: interview.id,
+      candidateId: interview.candidateId,
+    }).catch((err) => console.error("WhatsApp interview notification error:", err));
 
     return { success: true, data: interview };
   } catch (error) {
